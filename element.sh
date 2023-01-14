@@ -1,10 +1,12 @@
 #!/bin/bash
 
-PSQL="psql --username=postgres --dbname=periodic_table --tuples-only -X -c"
+PSQL="psql --username=postgres --dbname=periodic_table --tuples-only -A -X -c"
 
 if [[ -z $1 ]]
 then
   echo Please provide an element as an argument.
+  #set escape var for later
+  SHOULD_EXIT=TRUE
 else
   #Argument given, check if it's a number.
   if [[ $1 =~ ^[0-9]+$ ]]
@@ -25,4 +27,14 @@ else
   #Once number is gotten (no matter how), proceed on
 fi
 
-echo $ATOMIC_NUMBER
+#Only do stuff if an arg is given (SHOULD_EXIT being false)
+if [[ ! $SHOULD_EXIT ]]
+then
+  #If atomic number found, output info
+  if [[ ! -z $ATOMIC_NUMBER ]]
+  then
+    echo "Atomic number $ATOMIC_NUMBER found"
+  else
+    echo "I could not find that element in the database."
+  fi
+fi
