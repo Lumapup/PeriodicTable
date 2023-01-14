@@ -7,10 +7,11 @@ then
   echo Please provide an element as an argument.
 else
   #Argument given, check if it's a number.
-  ATOMIC_NUMBER=$($PSQL "SELECT atomic_number FROM elements WHERE atomic_number=$1;")
-  #If blank, proceed to next check:
-  if [[ -z $ATOMIC_NUMBER ]]
+  if [[ $1 =~ ^[0-9]+$ ]]
   then
+    ATOMIC_NUMBER=$($PSQL "SELECT atomic_number FROM elements WHERE atomic_number=$1;")
+  else
+    #If NaN, test 2 types of text:
     #Check if it's a symbol.
     ATOMIC_NUMBER=$($PSQL "SELECT atomic_number FROM elements WHERE symbol='$1';")
     #If blank, proceed to final check:
@@ -24,3 +25,4 @@ else
   #Once number is gotten (no matter how), proceed on
 fi
 
+echo $ATOMIC_NUMBER
